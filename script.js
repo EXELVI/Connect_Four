@@ -52,6 +52,80 @@ function dropToken(col) {
     }
 }
 
+function checkWin(row, col) {
+    if (checkVertical(row, col) || checkHorizontal(row, col) || checkDiagonal(row, col)) {
+        alert(`Player ${currentPlayer} wins!`);
+        initBoard();
+        renderBoard();
+    }
+}
+
+function checkVertical(row, col) {
+    let count = 1;
+    for (let i = row + 1; i < rows; i++) {
+        if (board[i][col] === currentPlayer) {
+            count++;
+        } else {
+            break;
+        }
+    }
+    return count >= 4;
+}
+
+function checkHorizontal(row, col) {
+    let count = 1;
+    for (let i = col - 1; i >= 0; i--) {
+        if (board[row][i] === currentPlayer) {
+            count++;
+        } else {
+            break;
+        }
+    }
+    for (let i = col + 1; i < columns; i++) {
+        if (board[row][i] === currentPlayer) {
+            count++;
+        } else {
+            break;
+        }
+    }
+    return count >= 4;
+}
+
+function checkDiagonal(row, col) {
+    let count = 1;
+    for (let i = 1; i < 4; i++) {
+        if (row - i < 0 || col - i < 0 || board[row - i][col - i] !== currentPlayer) {
+            break;
+        }
+        count++;
+    }
+    for (let i = 1; i < 4; i++) {
+        if (row + i >= rows || col + i >= columns || board[row + i][col + i] !== currentPlayer) {
+            break;
+        }
+        count++;
+    }
+    if (count >= 4) {
+        return true;
+    }
+
+    count = 1;
+    for (let i = 1; i < 4; i++) {
+        if (row - i < 0 || col + i >= columns || board[row - i][col + i] !== currentPlayer) {
+            break;
+        }
+        count++;
+    }
+    for (let i = 1; i < 4; i++) {
+        if (row + i >= rows || col - i < 0 || board[row + i][col - i] !== currentPlayer) {
+            break;
+        }
+        count++;
+    }
+    return count >= 4;
+}
+
+
 function init() {
     initBoard();
     renderBoard();
