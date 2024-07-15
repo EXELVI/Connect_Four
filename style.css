@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.connect-four {
+    text-align: center;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(7, 80px);
+    grid-template-rows: repeat(6, 80px); 
+    gap: 5px; 
+    background-color: #3b5998; 
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cell {
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50%; 
+    cursor: pointer;
+}
+
+.player-1 {
+    background-color: #ff5733; 
+}
+
+.player-2 {
+    background-color: #33b5e5;
+}
