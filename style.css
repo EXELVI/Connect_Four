@@ -8,10 +8,26 @@ body {
     background-color: #f0f0f0;
 }
 
+.dark {
+    background-color: #333;
+    color: white;
+}
+
 .connect-four {
     text-align: center;
 }
 
+#theme {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    background-color: #142855;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 .board {
     display: grid;
     grid-template-columns: repeat(7, 80px);
@@ -31,10 +47,22 @@ body {
     cursor: pointer;
 }
 
+.dark {
+    background-color: #333;
+}
+
 .player-1 {
-    background-color: #ff5733; 
+    background-color: #F24333; 
 }
 
 .player-2 {
-    background-color: #33b5e5;
+    background-color: #01BAEF;
+}
+
+.dark-player-1 {
+    background-color: #BA1B1D;
+}
+
+.dark-player-2 {
+    background-color: #2E294E;
 }

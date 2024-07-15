@@ -1,6 +1,7 @@
 const columns = 7;
 const rows = 6;
-const maxDepth = 4; // Profondità di ricerca per l'algoritmo Minimax
+const maxDepth = 4;
+const suboptimalMoveChance = 0.3;
 let currentPlayer = 1;
 let board = [];
 
@@ -15,17 +16,27 @@ function initBoard() {
 
 function renderBoard() {
     const boardElement = document.querySelector('.board');
-
+    const theme = localStorage.getItem('theme');
     boardElement.innerHTML = '';
 
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < columns; col++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
+            if (theme === 'dark') {
+                cell.classList.add('dark');
+            }
+
             if (board[row][col] === 1) {
                 cell.classList.add('player-1');
+                if (theme === 'dark') {
+                    cell.classList.add('dark-player-1');
+                }
             } else if (board[row][col] === 2) {
                 cell.classList.add('player-2');
+                if (theme === 'dark') {
+                    cell.classList.add('dark-player-2');                
+                }
             }
             cell.setAttribute('data-row', row);
             cell.setAttribute('data-col', col);
@@ -36,11 +47,11 @@ function renderBoard() {
 }
 
 function handleClick(event) {
-    if (currentPlayer === 1) { // Assumiamo che il giocatore umano sia il giocatore 1
+    if (currentPlayer === 1) {
         const col = event.target.getAttribute('data-col');
         dropToken(parseInt(col));
         if (currentPlayer === 2) {
-            aiMove();
+            setTimeout(aiMove, 500);
         }
     }
 }
@@ -133,28 +144,24 @@ function checkDiagonal(row, col) {
 function evaluateBoard() {
     let score = 0;
 
-    // Valutazione orizzontale
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < columns - 3; col++) {
             score += evaluateSegment([board[row][col], board[row][col + 1], board[row][col + 2], board[row][col + 3]]);
         }
     }
 
-    // Valutazione verticale
     for (let row = 0; row < rows - 3; row++) {
         for (let col = 0; col < columns; col++) {
             score += evaluateSegment([board[row][col], board[row + 1][col], board[row + 2][col], board[row + 3][col]]);
         }
     }
 
-    // Valutazione diagonale (/)
     for (let row = 0; row < rows - 3; row++) {
         for (let col = 0; col < columns - 3; col++) {
             score += evaluateSegment([board[row][col], board[row + 1][col + 1], board[row + 2][col + 2], board[row + 3][col + 3]]);
         }
     }
 
-    // Valutazione diagonale (\)
     for (let row = 0; row < rows - 3; row++) {
         for (let col = 3; col < columns; col++) {
             score += evaluateSegment([board[row][col], board[row + 1][col - 1], board[row + 2][col - 2], board[row + 3][col - 3]]);
@@ -291,7 +298,9 @@ function currentPlayerWins(player) {
 }
 
 function aiMove() {
-    const [col, _] = minimax(board, maxDepth, -Infinity, Infinity, true);
+    const shouldPlaySuboptimal = Math.random() < suboptimalMoveChance;
+    const depth = shouldPlaySuboptimal ? Math.floor(maxDepth / 2) : maxDepth;
+    const [col, _] = minimax(board, depth, -Infinity, Infinity, true);
     dropToken(col);
 }
 
@@ -301,3 +310,36 @@ function init() {
 }
 
 init();
+
+document.addEventListener("DOMContentLoaded", () => {
+    const theme = localStorage.getItem('theme');
+    const themeButton = document.getElementById('theme')
+    if (theme === 'dark') {
+        document.body.classList.add('dark');
+        document.querySelectorAll('.cell').forEach(cell => { cell.classList.add('dark') })
+        themeButton.innerText = 'Light';
+        themeButton.style.backgroundColor = "#fca311"
+    } else {
+        document.body.classList.remove('dark');
+        document.querySelectorAll('.cell').forEach(cell => { cell.classList.remove('dark') })
+        themeButton.innerText = 'Dark';
+        themeButton.style.backgroundColor = "#142855"
+    }
+
+    themeButton.addEventListener('click', () => {
+        if (document.body.classList.contains('dark')) {
+            document.body.classList.remove('dark');
+            document.querySelectorAll('.cell').forEach(cell => { cell.classList.remove('dark') })
+            themeButton.innerText = 'Dark';
+            themeButton.style.backgroundColor = "#142855"
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.body.classList.add('dark');
+            document.querySelectorAll('.cell').forEach(cell => { cell.classList.add('dark') })
+            themeButton.innerText = 'Light';
+            themeButton.style.backgroundColor = "#fca311"
+            localStorage.setItem('theme', 'dark');
+        }
+    })
+
+})
